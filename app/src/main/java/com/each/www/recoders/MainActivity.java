@@ -1,0 +1,116 @@
+package com.each.www.recoders;
+
+
+import android.media.MediaPlayer;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+
+//设计思路：1.检索录音目录，用列表展示 2.点击item播放录音内容
+//Recorder/call/
+public class MainActivity extends AppCompatActivity implements OnItemClickListener{
+    private File recorderPath;
+    private ListView recorderList;
+    private MediaPlayer player = new MediaPlayer();
+
+    private List<Map<String, Object>> listitem;
+    private Map<String, Object> showitem;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        listitem = new ArrayList<Map<String, Object>>();
+
+        recorderList = (ListView)findViewById(R.id.recorderList);
+        recorderPath = new File("/storage/emulated/0/Recorder/call");
+        getAllFiles(recorderPath);
+
+        //创建一个simpleAdapter
+        SimpleAdapter myAdapter = new SimpleAdapter(getApplicationContext(),listitem,
+                R.layout.recorder_item,new String[]{"r_icon","r_name","r_time"},
+                new int[]{R.id.r_icon,R.id.r_name,R.id.r_time});
+        ListView recorderList = (ListView)findViewById(R.id.recorderList);
+        recorderList.setAdapter(myAdapter);
+        recorderList.setOnItemClickListener(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (player != null){
+            player.stop();
+            player.reset();
+            player.release();
+            player = null;
+        }
+        super.onDestroy();
+    }
+
+    private void getAllFiles(File path2){
+        File files[] = path2.listFiles();
+        if(files != null){
+            for (File f : files){
+                if(f.isDirectory()){
+                    getAllFiles(f);
+                }else{
+                   Log.e("TAG",f.toString());
+                    //确定拿到录音文件
+                    SimpleDateFormat sdf= new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+                    String time =sdf.format(new Date(f.lastModified()));
+                    String name = f.getName();
+                    Log.e("TAG", "录音时间  "+time);
+                    Log.e("TAG","文件名字  "+name);
+
+                    showitem = new HashMap<String, Object>();
+                    showitem.put("r_icon", R.drawable.r_icon);
+                    showitem.put("r_name", name);
+                    showitem.put("r_time", time);
+                    listitem.add(showitem);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (player.isPlaying()){
+            player.stop();
+            player.reset();
+            player.release();
+            player = null;
+        }
+            player = new MediaPlayer();
+            Toast.makeText(MainActivity.this, "测试", Toast.LENGTH_SHORT).show();
+            TextView r_name = (TextView) view.findViewById(R.id.r_name);
+            Log.e("TAG", r_name.getText().toString());
+            //文件名
+            String R_name = r_name.getText().toString();
+            //文件全路径
+            String R_apath = recorderPath.toString() + "/" + R_name;
+            try {
+                player.setDataSource(R_apath);
+                player.prepare();
+                player.start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+    }
+
+}
