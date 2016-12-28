@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="horizontal">
+              android:orientation="horizontal"
+              >
 
     <!--这是一个用于显示图标的ImageView-->
     <ImageView
@@ -12,14 +13,12 @@
         android:baselineAlignBottom="true"
         android:paddingLeft="8dp"
         />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
         <TextView
-            android:id="@+id/r_name"
+            android:id="@+id/l_msg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingTop="9dp"
@@ -28,12 +27,24 @@
             android:textSize="20sp"/>
 
         <TextView
+            android:id="@+id/r_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="0dp"
+            android:paddingLeft="8dp"
+            android:textColor="#1D1D1C"
+            android:textSize="1sp"
+            android:visibility="invisible"/>
+
+        <TextView
             android:id="@+id/r_time"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingLeft="8dp"
             android:paddingTop="10dp"
-            android:textColor="#B4B4B9"
-            android:textSize="14sp"/>
+            android:paddingRight="5dp"
+            android:textColor="#FF0000"
+            android:textSize="16sp"/>
     </LinearLayout>
+
 </LinearLayout>
